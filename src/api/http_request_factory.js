@@ -15,7 +15,7 @@ module.exports = class HttpRequestFactory {
 
    _getSignedRequest(method, endpoint, body = {}) {
       const timestamp = new Date().toISOString();
-      const privkey = PrivKey.fromBn( Bn.fromBuffer(Buffer.from(this.authToken,"hex")));
+      const privkey = PrivKey.fromBn( Bn.fromBuffer(deps.Buffer.from(this.authToken,"hex")));
       const pubkey = PubKey.fromPrivKey(privkey);
       const serializedBody = JSON.stringify(body) === '{}' ? '' : JSON.stringify(body);
       const rfirma = HttpRequestFactory._getRequestSignature(method, endpoint, serializedBody,
@@ -96,7 +96,6 @@ module.exports = class HttpRequestFactory {
     * @returns {Object}
     */
    getEncryptionKeypairRequest(encryptionPubKey) {
-console.log("getEncryptionKeypairRequest",encryptionPubKey);
       return this._getSignedRequest(
          'GET',
          `${profileEndpoint}/encryptionKeypair`,
