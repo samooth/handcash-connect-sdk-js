@@ -3,10 +3,7 @@ const HttpRequestFactory = require('./api/http_request_factory');
 const Wallet = require('./wallet');
 const Profile = require('./profile');
 
-/**
- * @class
- */
-class HandCashCloudAccount {
+module.exports = class HandCashCloudAccount {
    /**
     * @param {Wallet} wallet
     * @param {Profile} profile
@@ -32,6 +29,4 @@ class HandCashCloudAccount {
       const profile = new Profile(handCashConnectService);
       return new HandCashCloudAccount(wallet, profile);
    }
-}
-
-module.exports = HandCashCloudAccount;
+};

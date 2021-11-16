@@ -51,10 +51,7 @@ const HandCashConnectService = require('../api/handcash_connect_service');
  * @property {number} exchangeRateVersion
  */
 
-/**
- * @class
- */
-class Wallet {
+module.exports = class Wallet {
    /**
     * @param {HandCashConnectService} handCashConnectService
     */
@@ -97,6 +94,4 @@ class Wallet {
    async getExchangeRate(currencyCode) {
       return this.handCashConnectService.getExchangeRate(currencyCode);
    }
-}
-
-module.exports = Wallet;
+};

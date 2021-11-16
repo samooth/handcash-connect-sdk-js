@@ -1,7 +1,4 @@
-/**
- * @class
- */
-class HandCashConnectApiError extends Error {
+module.exports = class HandCashConnectApiError extends Error {
    /**
     * @param {number} httpStatusCode
     * @param {string} message
@@ -17,6 +14,4 @@ class HandCashConnectApiError extends Error {
    toString() {
       return JSON.stringify(this);
    }
-}
-
-module.exports = HandCashConnectApiError;
+};

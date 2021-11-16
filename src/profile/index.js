@@ -1,5 +1,6 @@
-const { PrivateKey } = require('bsv');
-const ECIES = require('bsv/ecies');
+const { Ecies, PrivKey, PubKey, deps  } = require('bsv');
+// eslint-disable-next-line no-unused-vars
+const HandCashConnectService = require('../api/handcash_connect_service');
 
 /**
  * @typedef {Object} UserPublicProfile
@@ -36,10 +37,7 @@ const ECIES = require('bsv/ecies');
  * @property {string} signature
  */
 
-/**
- * @class
- */
-class Profile {
+module.exports = class Profile {
    /**
     * @param {HandCashConnectService} handCashConnectService
     */
@@ -83,31 +81,26 @@ class Profile {
     * @returns {Promise<EncryptionKeypair>}
     */
    async getEncryptionKeypair() {
-      const privateKey = PrivateKey.fromRandom();
+      const privateKey = PrivKey.fromRandom();
       const encryptedKeypair = await this.handCashConnectService.getEncryptionKeypair(
-         privateKey.publicKey.toString(),
+         PubKey.fromPrivKey(privateKey).toString(),
       );
+
       return {
-         publicKey: ECIES()
-            .privateKey(privateKey)
-            .decrypt(Buffer.from(encryptedKeypair.encryptedPublicKeyHex, 'hex'))
+         pubkey: Ecies.electrumDecrypt(deps.Buffer.from(encryptedKeypair.encryptedPublicKeyHex, 'hex'), privateKey)
             .toString(),
-         privateKey: ECIES()
-            .privateKey(privateKey)
-            .decrypt(Buffer.from(encryptedKeypair.encryptedPrivateKeyHex, 'hex'))
+         privkey: Ecies.electrumDecrypt(deps.Buffer.from(encryptedKeypair.encryptedPrivateKeyHex, 'hex'), privateKey)
             .toString(),
       };
    }
 
    /**
-    * @param {Object} dataSignatureParameters
-    * @param {String} dataSignatureParameters.value
-    * @param {String} dataSignatureParameters.format
-    * @returns {Promise<DataSignature>}
-    */
+   * @param {Object} dataSignatureParameters
+   * @param {String} dataSignatureParameters.value
+   * @param {String} dataSignatureParameters.format
+   * @returns {Promise<DataSignature>}
+   */
    async signData(dataSignatureParameters) {
       return this.handCashConnectService.signData(dataSignatureParameters);
    }
-}
-
-module.exports = Profile;
+};
